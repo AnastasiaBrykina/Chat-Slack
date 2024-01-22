@@ -1,8 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import axios from 'axios';
+import routes from '../routes';
+import { useNavigate } from 'react-router-dom';
+
+import useAuth from '../hooks/authHook';
 
 const LoginPage = () => {
+  const [isInvalid, setValidationStatus] = useState(false);
+  const navigate = useNavigate();
+  const auth = useAuth();
   const dataForm = {
     username: '',
     password: '',
@@ -10,7 +19,19 @@ const LoginPage = () => {
 
   const formik = useFormik({
     initialValues: dataForm,
-    onSubmit: (values) => console.log('Form is valid!'),
+    onSubmit: async (values) => {
+      const { logIn, logOut } = auth;
+      try {
+        const res = await axios.post(routes.loginPath(), values);
+        window.localStorage.setItem('currentUser', JSON.stringify(res.data));
+        logIn();
+        setValidationStatus(false);
+        navigate('/');
+      } catch (e) {
+        logOut();
+        setValidationStatus(true);
+      }
+    },
   });
 
   const renderLoginForm = () => {
@@ -29,6 +50,7 @@ const LoginPage = () => {
             placeholder="Ваш ник"
             onChange={formik.handleChange}
             value={formik.values.username}
+            isInvalid={isInvalid}
           />
           <Form.Label>Ваш ник</Form.Label>
         </Form.Group>
@@ -41,7 +63,11 @@ const LoginPage = () => {
             placeholder="Пароль"
             onChange={formik.handleChange}
             value={formik.values.password}
+            isInvalid={isInvalid}
           />
+          <Form.Control.Feedback type="invalid">
+            Неверные имя пользователя или пароль
+          </Form.Control.Feedback>
           <Form.Label>Пароль</Form.Label>
         </Form.Group>
         <Button type="submit" variant="outline-primary" className="w-100 mb-3">
