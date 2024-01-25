@@ -7,6 +7,7 @@ import routes from '../routes';
 import { useNavigate } from 'react-router-dom';
 
 import useAuth from '../hooks/authHook';
+import Navbar from './Navbar';
 
 const LoginPage = () => {
   const [isInvalid, setValidationStatus] = useState(false);
@@ -28,6 +29,7 @@ const LoginPage = () => {
         setValidationStatus(false);
         navigate('/');
       } catch (e) {
+        console.log(e);
         logOut();
         setValidationStatus(true);
       }
@@ -79,13 +81,7 @@ const LoginPage = () => {
 
   return (
     <div className="h-100 d-flex flex-column" id="chat">
-      <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-        <div className="container">
-          <a className="navbar-brand" href="/login">
-            Hexlet Chat
-          </a>
-        </div>
-      </nav>
+      <Navbar />
       <div className="container-fluid h-100">
         <div className="row justify-content-center align-content-center h-100">
           <div className="col-12 col-md-8 col-xxl-6">

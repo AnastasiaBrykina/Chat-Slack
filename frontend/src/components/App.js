@@ -7,11 +7,10 @@ import {
 } from 'react-router-dom';
 import { useState } from 'react';
 
-import LoginPage from './LoginPage';
-import ChatPage from './ChatPage';
+import LoginPage from './loginPage';
+import ChatPage from './chatPage';
 
 import AuthContext from '../context/context';
-import useAuth from '../hooks/authHook';
 
 const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -28,10 +27,10 @@ const AuthProvider = ({ children }) => {
 };
 
 const PrivateRoute = ({ children }) => {
-  const { loggedIn } = useAuth();
   const location = useLocation();
+  const currentUser = localStorage.getItem('currentUser');
 
-  return loggedIn ? (
+  return currentUser ? (
     children
   ) : (
     <Navigate to={'/login'} state={location}></Navigate>
