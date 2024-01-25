@@ -1,10 +1,10 @@
 import axios from 'axios';
-import routes from '../routes';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 
-import { addMessages } from '../slices/messages';
+import { addMessages } from '../slices/messages.js';
+import routes from '../routes.js';
 
 const Messages = () => {
   const dispatch = useDispatch();

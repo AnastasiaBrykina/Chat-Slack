@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import axios from 'axios';
-import routes from '../routes';
 import { useNavigate } from 'react-router-dom';
 
-import useAuth from '../hooks/authHook';
-import Navbar from './Navbar';
+import useAuth from '../hooks/authHook.js';
+import Navbar from './Navbar.js';
+import routes from '../routes.js';
 
 const LoginPage = () => {
   const [isInvalid, setValidationStatus] = useState(false);

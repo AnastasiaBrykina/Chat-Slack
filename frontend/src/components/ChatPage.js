@@ -1,6 +1,6 @@
-import Navbar from './Navbar';
-import Channels from './Channels';
-import Messages from './Messages';
+import Navbar from './Navbar.js';
+import Channels from './Channels.js';
+import Messages from './Messages.js';
 
 const ChatPage = () => {
   return (
