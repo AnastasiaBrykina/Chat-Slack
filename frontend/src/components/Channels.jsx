@@ -2,8 +2,8 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { addChannels, selectedChannel } from '../slices/channels.js';
-import routes from '../routes.js';
+import { addChannels, selectedChannel } from '../slices/channels';
+import routes from '../routes';
 
 const Channels = () => {
   const dispatch = useDispatch();

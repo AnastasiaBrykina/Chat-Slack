@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 
-import { addMessages } from '../slices/messages.js';
-import routes from '../routes.js';
+import { addMessages } from '../slices/messages';
+import routes from '../routes';
 
 const Messages = () => {
   const dispatch = useDispatch();

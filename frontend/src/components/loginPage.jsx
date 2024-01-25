@@ -5,9 +5,9 @@ import { useFormik } from 'formik';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-import useAuth from '../hooks/authHook.js';
-import Navbar from './Navbar.js';
-import routes from '../routes.js';
+import useAuth from '../hooks/authHook';
+import Navbar from './Navbar';
+import routes from '../routes';
 
 const LoginPage = () => {
   const [isInvalid, setValidationStatus] = useState(false);

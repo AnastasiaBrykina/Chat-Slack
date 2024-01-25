@@ -7,10 +7,10 @@ import {
 } from 'react-router-dom';
 import { useState } from 'react';
 
-import LoginPage from './loginPage.js';
-import ChatPage from './chatPage.js';
+import LoginPage from './loginPage';
+import ChatPage from './chatPage';
 
-import AuthContext from '../context/context.js';
+import AuthContext from '../context/context';
 
 const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
