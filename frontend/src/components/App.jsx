@@ -7,8 +7,8 @@ import {
 } from 'react-router-dom';
 import { useState } from 'react';
 
-import LoginPage from './loginPage';
-import ChatPage from './chatPage';
+import LoginPage from './LoginPage';
+import ChatPage from './ChatPage';
 
 import AuthContext from '../context/context';
 
