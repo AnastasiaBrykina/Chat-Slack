@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 
-import { loadMessages, addMessage, loadNewMessage } from '../slices/messages';
+import {
+  loadMessages,
+  addMessage,
+  subscribeSocketMessage,
+} from '../slices/messages';
 
 const Messages = () => {
   const [body, setBody] = useState('');
@@ -16,6 +20,7 @@ const Messages = () => {
 
   useEffect(() => {
     dispatch(loadMessages(headers));
+    dispatch(subscribeSocketMessage());
   }, []);
 
   const onSubmit = (e) => {
