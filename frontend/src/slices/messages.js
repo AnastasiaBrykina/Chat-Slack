@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 
 import routes from '../routes';
 
-const socket = io('http://localhost:3000');
+const socket = io();
 
 export const addMessage = createAsyncThunk(
   'addMessage',
