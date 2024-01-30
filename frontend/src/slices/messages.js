@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import routes from '../routes';
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:3000');
 
 export const addMessage = createAsyncThunk(
   'addMessage',
@@ -66,16 +69,19 @@ const messagesSlice = createSlice({
 
 export const { loadNewMessage } = messagesSlice.actions;
 
-// export const createMySockedMiddleware = (store) => (next) => (action) => {
-//   console.log('action');
+export const createMySockedMiddleware = (store) => {
+  const socket = io('http://localhost:3000');
 
-//   // socket.on('newMessage', (payload) => {
-//   //   console.log(payload);
-//   //   store.dispatch(messagesSlice.actions.loadNewMessage(payload));
-//   //   // => { body: "new message", channelId: 7, id: 8, username: "admin" }
-//   // });
+  try {
+    socket.on('newMessage', (payload) => {
+      store.dispatch(loadNewMessage(payload));
+      // => { body: "new message", channelId: 7, id: 8, username: "admin" }
+    });
+  } catch (e) {
+    console.log(e);
+  }
 
-//   return next(action);
-// };
+  return (next) => (action) => next(action);
+};
 
 export default messagesSlice.reducer;

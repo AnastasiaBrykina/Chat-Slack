@@ -6,13 +6,10 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { useState } from 'react';
-import { io } from 'socket.io-client';
 
 import LoginPage from './LoginPage';
 import ChatPage from './ChatPage';
 import AuthContext from '../context/context';
-
-const socket = io('http://localhost:3000');
 
 const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -23,7 +20,7 @@ const AuthProvider = ({ children }) => {
     setLoggedIn(false);
   };
 
-  const value = { loggedIn, logIn, logOut, socket };
+  const value = { loggedIn, logIn, logOut };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 
 import { loadMessages, addMessage, loadNewMessage } from '../slices/messages';
-import useAuth from '../hooks/authHook';
 
 const Messages = () => {
   const [body, setBody] = useState('');
@@ -14,15 +13,9 @@ const Messages = () => {
   const messages = useSelector((state) => state.messages.messages);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
   const processStatus = useSelector((state) => state.messages.status);
-  const { socket } = useAuth();
 
   useEffect(() => {
     dispatch(loadMessages(headers));
-    socket.on('newMessage', (payload) => {
-      console.log(payload);
-      dispatch(loadNewMessage(payload));
-      // => { body: "new message", channelId: 7, id: 8, username: "admin" }
-    });
   }, []);
 
   const onSubmit = (e) => {
