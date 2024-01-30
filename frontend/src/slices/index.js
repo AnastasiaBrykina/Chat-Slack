@@ -8,4 +8,6 @@ export default configureStore({
     channels: channelsReducer,
     messages: messagesReducer,
   },
+  // middleware: (getDefaultMiddleware) =>
+  //   getDefaultMiddleware().concat(createMySockedMiddleware),
 });
