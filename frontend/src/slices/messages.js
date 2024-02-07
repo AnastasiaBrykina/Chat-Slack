@@ -1,15 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { io } from 'socket.io-client';
 
 import routes from '../routes';
 
-const socket = io();
+const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
+const { token } = currentUser;
+const headers = { Authorization: `Bearer ${token}` };
 
 export const addMessage = createAsyncThunk(
   'addMessage',
-  async ({ newMessage, headers }) => {
-    const res = await axios.post(routes.addMessage(), newMessage, {
+  async ({ newMessage }) => {
+    const res = await axios.post(routes.messagesPath(), newMessage, {
       headers,
     });
 
@@ -17,16 +18,13 @@ export const addMessage = createAsyncThunk(
   }
 );
 
-export const loadMessages = createAsyncThunk(
-  'loadMessages',
-  async (headers) => {
-    const res = await axios.get(routes.messages(), {
-      headers,
-    });
+export const loadMessages = createAsyncThunk('loadMessages', async () => {
+  const res = await axios.get(routes.messagesPath(), {
+    headers,
+  });
 
-    return res.data;
-  }
-);
+  return res.data;
+});
 
 const initialState = {
   messages: [],
@@ -38,11 +36,8 @@ const messagesSlice = createSlice({
   name: 'messages',
   initialState,
   reducers: {
-    loadNewMessage: (state, { payload }) => {
-      state.messages.push(payload);
-    },
-    subscribeSocketMessage: (state, { payload }) => {
-      console.log('connected');
+    subscribeSocketMessage: () => {
+      console.log('subscribe to new messages!');
     },
   },
   extraReducers: (builder) => {
@@ -71,18 +66,5 @@ const messagesSlice = createSlice({
   },
 });
 
-export const { loadNewMessage, subscribeSocketMessage } = messagesSlice.actions;
-
-export const createMySockedMiddleware = (store) => (next) => (action) => {
-  const { type, payload } = action;
-
-  if (type === 'messages/subscribeSocketMessage') {
-    socket.on('newMessage', (payload) => {
-      store.dispatch(loadNewMessage(payload)); // => { body: "new message", channelId: 7, id: 8, username: "admin" }
-    });
-  }
-
-  return next(action);
-};
-
+export const { subscribeSocketMessage } = messagesSlice.actions;
 export default messagesSlice.reducer;

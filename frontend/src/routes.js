@@ -2,9 +2,9 @@ const apiPath = '/api/v1';
 
 const routes = {
   loginPath: () => [apiPath, 'login'].join('/'),
-  channels: () => [apiPath, 'channels'].join('/'),
-  messages: () => [apiPath, 'messages'].join('/'),
-  addMessage: () => [apiPath, 'messages'].join('/'),
+  channelsPath: () => [apiPath, 'channels'].join('/'),
+  messagesPath: () => [apiPath, 'messages'].join('/'),
+  channelPath: (id) => [apiPath, 'channels', `${id}`].join('/'),
 };
 
 export default routes;

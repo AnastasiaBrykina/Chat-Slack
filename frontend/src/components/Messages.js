@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
+import { useFormik } from 'formik';
 
 import {
   loadMessages,
@@ -9,42 +10,56 @@ import {
 } from '../slices/messages';
 
 const Messages = () => {
-  const [body, setBody] = useState('');
   const dispatch = useDispatch();
+  const inputEl = useRef(null);
   const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
-  const { token, username } = currentUser;
-  const headers = { Authorization: `Bearer ${token}` };
+  const { username } = currentUser;
+
+  useEffect(() => {
+    dispatch(loadMessages());
+    dispatch(subscribeSocketMessage());
+    inputEl.current.focus();
+  }, []);
+
   const messages = useSelector((state) => state.messages.messages);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
   const processStatus = useSelector((state) => state.messages.status);
 
-  useEffect(() => {
-    dispatch(loadMessages(headers));
-    dispatch(subscribeSocketMessage());
-  }, []);
+  const formik = useFormik({
+    initialValues: {
+      body: '',
+    },
+    onSubmit: ({ body }) => {
+      const newMessage = {
+        body,
+        channelId: currentChannel.id,
+        username,
+      };
+      dispatch(addMessage({ newMessage }));
+      formik.values.body = '';
+    },
+  });
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const newMessage = {
-      body,
-      channelId: currentChannel.id,
-      username,
-    };
-    dispatch(addMessage({ newMessage, headers }));
-    setBody('');
+  const isDesabled = processStatus === 'sending' || !formik.values.body.trim();
+
+  const currentMessages = currentChannel
+    ? messages.filter(({ channelId }) => channelId === currentChannel.id)
+    : [];
+
+  const renderChannelInfo = () => {
+    if (!currentChannel) {
+      return null;
+    }
+
+    return (
+      <div className="bg-light mb-4 p-3 shadow-sm small">
+        <p className="m-0">
+          <b># {currentChannel.name}</b>
+        </p>
+        <span>{currentMessages.length} сообщения</span>
+      </div>
+    );
   };
-
-  const onChangeBody = ({ target }) => setBody(target.value);
-
-  if (!currentChannel) {
-    return null;
-  }
-
-  const isDesabled = processStatus === 'sending' || !body.trim();
-
-  const currentMessages = messages.filter(
-    ({ channelId }) => channelId === currentChannel.id
-  );
 
   const renderCurrentMessages = (messages) => {
     if (messages.length === 0) {
@@ -64,28 +79,25 @@ const Messages = () => {
 
   return (
     <div className="d-flex flex-column h-100">
-      <div className="bg-light mb-4 p-3 shadow-sm small">
-        <p className="m-0">
-          <b>#{currentChannel.name}</b>
-        </p>
-        <span>{currentMessages.length} сообщения</span>
-      </div>
+      {renderChannelInfo()}
       <div id="messages-box" className="chat-messages overflow-auto px-5">
         {renderCurrentMessages(currentMessages)}
       </div>
       <div className="mt-auto px-5 py-3">
-        <Form className="border rounded-2" onSubmit={onSubmit}>
+        <Form className="border rounded-2" onSubmit={formik.handleSubmit}>
           <Form.Control.Feedback type="invalid">
             Неверные имя пользователя или пароль
           </Form.Control.Feedback>
           <InputGroup id="body">
             <Form.Control
+              id="messagesInput"
               name="body"
               placeholder="Введите сообщение..."
               aria-label="Новое сообщение"
               className="border-0 p-0 ps-2"
-              onChange={onChangeBody}
-              value={body}
+              onChange={formik.handleChange}
+              value={formik.values.body}
+              ref={inputEl}
             />
             <Button
               variant="outline-secondary"
