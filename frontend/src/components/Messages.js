@@ -1,46 +1,63 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import { useNavigate } from 'react-router-dom';
 
-import {
-  loadMessages,
-  addMessage,
-  subscribeSocketMessage,
-} from '../slices/messages';
+import restApi from '../restApi';
+import { loadMessages } from '../slices/messages';
+import { getCurrentUserName } from '../authData';
 
 const Messages = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const inputEl = useRef(null);
-  const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
-  const { username } = currentUser;
-
-  useEffect(() => {
-    dispatch(loadMessages());
-    dispatch(subscribeSocketMessage());
-    inputEl.current.focus();
-  }, []);
-
+  const [isDisabled, setDisablesStatus] = useState(false);
   const messages = useSelector((state) => state.messages.messages);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
-  const processStatus = useSelector((state) => state.messages.status);
+
+  useEffect(() => {
+    inputEl.current.focus();
+  });
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        setDisablesStatus(true);
+        const res = await restApi.loadMessages();
+        dispatch(loadMessages(res.data));
+      } catch (e) {
+        if (e.response.status === 401) {
+          navigate('login');
+        }
+      }
+      setDisablesStatus(false);
+    };
+    fetchMessages();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
       body: '',
     },
-    onSubmit: ({ body }) => {
-      const newMessage = {
-        body,
-        channelId: currentChannel.id,
-        username,
-      };
-      dispatch(addMessage({ newMessage }));
+    onSubmit: async ({ body }) => {
+      try {
+        setDisablesStatus(true);
+        const newMessage = {
+          body,
+          channelId: currentChannel.id,
+          username: getCurrentUserName(),
+        };
+        await restApi.newMessage(newMessage);
+      } catch (e) {
+        console.log(e);
+      }
+      setDisablesStatus(false);
       formik.values.body = '';
     },
   });
 
-  const isDesabled = processStatus === 'sending' || !formik.values.body.trim();
+  const isDesabledBtn = !formik.values.body.trim() || isDisabled;
 
   const currentMessages = currentChannel
     ? messages.filter(({ channelId }) => channelId === currentChannel.id)
@@ -97,13 +114,14 @@ const Messages = () => {
               className="border-0 p-0 ps-2"
               onChange={formik.handleChange}
               value={formik.values.body}
+              disabled={isDisabled}
               ref={inputEl}
             />
             <Button
               variant="outline-secondary"
               className="btn btn-group-vertical"
               type="submit"
-              disabled={isDesabled}
+              disabled={isDesabledBtn}
             >
               Отправить
             </Button>

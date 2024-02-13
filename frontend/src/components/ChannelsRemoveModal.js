@@ -1,27 +1,32 @@
 import { Modal, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 
 import { setModalInfo } from '../slices/modals';
-import { selectedChannel, removeChannel } from '../slices/channels';
+import { selectedChannel } from '../slices/channels';
+import restApi from '../restApi';
 
 const ChannelsRemoveModal = () => {
   const dispatch = useDispatch();
+  const [isDisabled, setDisablesStatus] = useState(false);
   const channels = useSelector((state) => state.channels.channels);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
   const modalInfo = useSelector((state) => state.modals.modalInfo);
-  const status = useSelector((state) => state.channels.status);
+
   const { channel } = modalInfo;
 
-  const isDesabled = status === 'sending';
-
-  const onRemoveNundler = (channelId) => {
-    dispatch(removeChannel(channelId));
-
-    if (currentChannel.id === channelId) {
-      dispatch(selectedChannel(channels[0]));
+  const onRemoveNundler = async (channelId) => {
+    try {
+      setDisablesStatus(true);
+      await restApi.removeChannel(channelId);
+      if (currentChannel.id === channelId) {
+        dispatch(selectedChannel(channels[0]));
+      }
+      dispatch(setModalInfo({ type: null }));
+    } catch (e) {
+      console.log(e);
     }
-
-    dispatch(setModalInfo({ type: null }));
+    setDisablesStatus(false);
   };
 
   return (
@@ -38,7 +43,7 @@ const ChannelsRemoveModal = () => {
           className="btn-close"
           aria-label="Close"
           onClick={() => dispatch(setModalInfo({ type: null }))}
-          disabled={isDesabled}
+          disabled={isDisabled}
         />
       </Modal.Header>
       <Modal.Body>
@@ -49,7 +54,7 @@ const ChannelsRemoveModal = () => {
             type="button"
             className="me-2"
             onClick={() => dispatch(setModalInfo({ type: null }))}
-            disabled={isDesabled}
+            disabled={isDisabled}
           >
             Отменить
           </Button>
@@ -57,7 +62,7 @@ const ChannelsRemoveModal = () => {
             type="button"
             variant="danger"
             onClick={() => onRemoveNundler(channel.id)}
-            disabled={isDesabled}
+            disabled={isDisabled}
           >
             Удалить
           </Button>

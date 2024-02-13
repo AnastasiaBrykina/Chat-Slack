@@ -11,8 +11,10 @@ import routes from '../routes';
 
 const LoginPage = () => {
   const [isInvalid, setValidationStatus] = useState(false);
+  const [isDisabled, setDisablesStatus] = useState(false);
   const navigate = useNavigate();
   const auth = useAuth();
+  const { logIn, logOut } = auth;
   const dataForm = {
     username: '',
     password: '',
@@ -21,18 +23,21 @@ const LoginPage = () => {
   const formik = useFormik({
     initialValues: dataForm,
     onSubmit: async (values) => {
-      const { logIn, logOut } = auth;
       try {
+        setDisablesStatus(true);
         const res = await axios.post(routes.loginPath(), values);
         window.localStorage.setItem('currentUser', JSON.stringify(res.data));
         logIn();
         setValidationStatus(false);
         navigate('/');
       } catch (e) {
-        console.log(e);
+        const { status } = e.response;
+        if (status === 401) {
+          setValidationStatus(true);
+        }
         logOut();
-        setValidationStatus(true);
       }
+      setDisablesStatus(false);
     },
   });
 
@@ -52,6 +57,7 @@ const LoginPage = () => {
             placeholder="Ваш ник"
             onChange={formik.handleChange}
             value={formik.values.username}
+            disabled={isDisabled}
             isInvalid={isInvalid}
           />
           <Form.Label>Ваш ник</Form.Label>
@@ -65,6 +71,7 @@ const LoginPage = () => {
             placeholder="Пароль"
             onChange={formik.handleChange}
             value={formik.values.password}
+            disabled={isDisabled}
             isInvalid={isInvalid}
           />
           <Form.Control.Feedback type="invalid">
@@ -72,7 +79,12 @@ const LoginPage = () => {
           </Form.Control.Feedback>
           <Form.Label>Пароль</Form.Label>
         </Form.Group>
-        <Button type="submit" variant="outline-primary" className="w-100 mb-3">
+        <Button
+          type="submit"
+          variant="outline-primary"
+          className="w-100 mb-3"
+          disabled={isDisabled}
+        >
           Войти
         </Button>
       </Form>
@@ -88,9 +100,16 @@ const LoginPage = () => {
             <div className="card shadow-sm">
               <div className="card-body row p-5">{renderLoginForm()}</div>
               <div className="card-footer p-4">
-                <div className="text-center">
+                <div className="d-flex justify-content-center">
                   <span>Нет аккаунта?</span>
-                  <span>Регистрация</span>
+                  <Button
+                    href="/signup"
+                    variant="link"
+                    className="p-0"
+                    disabled={isDisabled}
+                  >
+                    Регистрация
+                  </Button>
                 </div>
               </div>
             </div>

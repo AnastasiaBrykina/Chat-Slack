@@ -2,21 +2,18 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { setModalInfo } from '../slices/modals';
-import { addChannel } from '../slices/channels';
+import { getCurrentUserName } from '../authData';
+import restApi from '../restApi';
 
 const ChannelsAddModal = () => {
   const dispatch = useDispatch();
   const inputEl = useRef(null);
+  const [isDisabled, setDisablesStatus] = useState(false);
   const channels = useSelector((state) => state.channels.channels);
-  const status = useSelector((state) => state.channels.status);
   const channelsNames = channels.map(({ name }) => name);
-  const currentUser = JSON.parse(window.localStorage.getItem('currentUser'));
-  const { username } = currentUser;
-
-  const isDesabled = status === 'sending';
 
   useEffect(() => inputEl.current.focus(), []);
 
@@ -24,14 +21,23 @@ const ChannelsAddModal = () => {
     initialValues: {
       name: '',
     },
-    onSubmit: ({ name }) => {
-      const newChannel = { name, username };
-      dispatch(addChannel({ newChannel }));
-      dispatch(setModalInfo({ type: null }));
-      formik.values.name = '';
+    onSubmit: async ({ name }) => {
+      try {
+        setDisablesStatus(true);
+        await restApi.newChannel({
+          name: name.trim(),
+          username: getCurrentUserName(),
+        });
+        dispatch(setModalInfo({ type: null }));
+        formik.values.name = '';
+      } catch (e) {
+        console.log(e);
+      }
+      setDisablesStatus(false);
     },
     validationSchema: Yup.object().shape({
       name: Yup.string()
+        .trim()
         .min(3, 'От 3 до 20 символов')
         .max(20, 'От 3 до 20 символов')
         .notOneOf(channelsNames, 'Должно быть уникальным')
@@ -55,7 +61,7 @@ const ChannelsAddModal = () => {
           className="btn-close"
           aria-label="Close"
           onClick={() => dispatch(setModalInfo({ type: null }))}
-          disabled={isDesabled}
+          disabled={isDisabled}
         />
       </Modal.Header>
       <Modal.Body>
@@ -69,6 +75,7 @@ const ChannelsAddModal = () => {
               value={formik.values.name}
               isInvalid={!!formik.errors.name}
               ref={inputEl}
+              disabled={isDisabled}
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.name}
@@ -80,11 +87,11 @@ const ChannelsAddModal = () => {
               onClick={() => dispatch(setModalInfo({ type: null }))}
               type="button"
               className="me-2"
-              disabled={isDesabled}
+              disabled={isDisabled}
             >
               Отменить
             </Button>
-            <Button type="submit" disabled={isDesabled}>
+            <Button type="submit" disabled={isDisabled}>
               Отправить
             </Button>
           </div>

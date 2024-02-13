@@ -1,23 +1,22 @@
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 
 import { setModalInfo } from '../slices/modals';
-import { renameChannel } from '../slices/channels';
+import restApi from '../restApi';
 
 const ChannelsRenameModal = () => {
   const dispatch = useDispatch();
   const inputEl = useRef(null);
+  const [isDisabled, setDisablesStatus] = useState(false);
   const channels = useSelector((state) => state.channels.channels);
   const modalInfo = useSelector((state) => state.modals.modalInfo);
-  const status = useSelector((state) => state.channels.status);
+
   const { channel } = modalInfo;
 
   const channelsNames = channels.map(({ name }) => name);
-
-  const isDesabled = status === 'sending';
 
   useEffect(() => {
     inputEl.current.focus();
@@ -28,13 +27,20 @@ const ChannelsRenameModal = () => {
     initialValues: {
       name: channel.name,
     },
-    onSubmit: ({ name }) => {
-      const editedChannel = { name };
-      dispatch(renameChannel({ editedChannel, id: channel.id }));
-      dispatch(setModalInfo({ type: null }));
+    onSubmit: async ({ name }) => {
+      try {
+        setDisablesStatus(true);
+        const editedChannel = { name: name.trim() };
+        await restApi.renameChannel({ id: channel.id, editedChannel });
+        dispatch(setModalInfo({ type: null }));
+      } catch (e) {
+        console.log(e);
+      }
+      setDisablesStatus(false);
     },
     validationSchema: Yup.object().shape({
       name: Yup.string()
+        .trim()
         .min(3, 'От 3 до 20 символов')
         .max(20, 'От 3 до 20 символов')
         .notOneOf(channelsNames, 'Должно быть уникальным')
@@ -58,7 +64,7 @@ const ChannelsRenameModal = () => {
           className="btn-close"
           aria-label="Close"
           onClick={() => dispatch(setModalInfo({ type: null }))}
-          disabled={isDesabled}
+          disabled={isDisabled}
         />
       </Modal.Header>
       <Modal.Body>
@@ -72,6 +78,7 @@ const ChannelsRenameModal = () => {
               value={formik.values.name}
               isInvalid={!!formik.errors.name}
               ref={inputEl}
+              disabled={isDisabled}
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.name}
@@ -83,11 +90,11 @@ const ChannelsRenameModal = () => {
               onClick={() => dispatch(setModalInfo({ type: null }))}
               type="button"
               className="me-2"
-              disabled={isDesabled}
+              disabled={isDisabled}
             >
               Отменить
             </Button>
-            <Button type="submit" disabled={isDesabled}>
+            <Button type="submit" disabled={isDisabled}>
               Отправить
             </Button>
           </div>

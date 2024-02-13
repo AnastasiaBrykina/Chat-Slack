@@ -10,9 +10,13 @@ import { useState } from 'react';
 import LoginPage from './LoginPage';
 import ChatPage from './ChatPage';
 import AuthContext from '../context/context';
+import SignupPage from './SignupPage';
+import { getCurrentUser } from '../authData';
 
 const AuthProvider = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const currentUser = getCurrentUser();
+  const currentUserIsLoggedIn = currentUser && currentUser.token ? true : false;
+  const [loggedIn, setLoggedIn] = useState(currentUserIsLoggedIn);
 
   const logIn = () => setLoggedIn(true);
   const logOut = () => {
@@ -36,22 +40,25 @@ const PrivateRoute = ({ children }) => {
   );
 };
 
-const App = () => (
-  <AuthProvider>
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <ChatPage />
-            </PrivateRoute>
-          }
-        />
-        <Route path="/login" element={<LoginPage />} />
-      </Routes>
-    </BrowserRouter>
-  </AuthProvider>
-);
+const App = () => {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <ChatPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+};
 
 export default App;

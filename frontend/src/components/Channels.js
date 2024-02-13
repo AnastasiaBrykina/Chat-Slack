@@ -1,22 +1,33 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
-import {
-  loadChannels,
-  selectedChannel,
-  subscribeSocketChannel,
-} from '../slices/channels';
+import { loadChannels, selectedChannel } from '../slices/channels';
 import { setModalInfo } from '../slices/modals';
+import restApi from '../restApi';
 
 const Channels = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [isDisabled, setDisablesStatus] = useState(false);
   const channels = useSelector((state) => state.channels.channels);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
 
   useEffect(() => {
-    dispatch(loadChannels());
-    dispatch(subscribeSocketChannel());
+    const fetchChannels = async () => {
+      try {
+        setDisablesStatus(true);
+        const res = await restApi.loadChannels();
+        dispatch(loadChannels(res.data));
+      } catch (e) {
+        if (e.response.status === 401) {
+          navigate('login');
+        }
+      }
+      setDisablesStatus(false);
+    };
+    fetchChannels();
   }, []);
 
   if (channels.length === 0) {
@@ -46,6 +57,7 @@ const Channels = () => {
             <Button
               variant={getBtnVariant(id)}
               className="w-100 rounded-0 text-start text-truncate"
+              disabled={isDisabled}
             >
               <span className="me-1">#</span>
               {name}
@@ -120,6 +132,7 @@ const Channels = () => {
           type="button"
           className="p-0 text-primary btn btn-group-vertical"
           onClick={() => dispatch(setModalInfo({ type: 'adding' }))}
+          disabled={isDisabled}
         >
           +
         </button>

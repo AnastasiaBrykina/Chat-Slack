@@ -1,33 +1,25 @@
 import { io } from 'socket.io-client';
 
-import { loadMessages } from './slices/messages';
-import { loadChannels } from './slices/channels';
+import { addMessage } from './slices/messages';
+import { addChannel, removeChannel, renameChannel } from './slices/channels';
 
 const socket = io();
 
-const createMySockedMiddleware = (store) => (next) => (action) => {
-  const { type } = action;
-
-  if (type === 'messages/subscribeSocketMessage') {
-    socket.on('newMessage', (payload) => {
-      store.dispatch(loadMessages()); // => { body: "new message", channelId: 7, id: 8, username: "admin" }
-    });
-  }
-
-  if (type === 'channels/subscribeSocketChannel') {
-    socket.on('newChannel', (payload) => {
-      store.dispatch(loadChannels());
-    });
-    socket.on('removeChannel', (payload) => {
-      store.dispatch(loadChannels());
-      store.dispatch(loadMessages());
-    });
-    socket.on('renameChannel', (payload) => {
-      store.dispatch(loadChannels());
-    });
-  }
-
-  return next(action);
+const createMySockedMiddleware = (store) => {
+  socket.on('newMessage', (payload) => {
+    store.dispatch(addMessage(payload));
+  });
+  socket.on('newChannel', (payload) => {
+    store.dispatch(addChannel(payload));
+  });
+  socket.on('removeChannel', (payload) => {
+    store.dispatch(removeChannel(payload));
+  });
+  socket.on('renameChannel', (payload) => {
+    store.dispatch(renameChannel(payload));
+  });
+  return (next) => (action) => next(action);
 };
 
+export { socket };
 export default createMySockedMiddleware;
