@@ -13,6 +13,7 @@ import LoginPage from './LoginPage';
 import ChatPage from './ChatPage';
 import AuthContext from '../context/context';
 import SignupPage from './SignupPage';
+import NotFoundPage from './NotFoundPage';
 import { getCurrentUser } from '../authData';
 import resources from '../locales/index.js';
 
@@ -45,15 +46,13 @@ const PrivateRoute = ({ children }) => {
 
 const App = () => {
   const i18n = i18next.createInstance();
-  i18n
-    .use(initReactI18next) // передаем экземпляр i18n в react-i18next, который сделает его доступным для всех компонентов через context API.
-    .init({
-      resources, // передаем переводы текстов интерфейса в формате JSON
-      fallbackLng: 'ru', // если переводы на языке пользователя недоступны, то будет использоваться язык, указанный в этом поле
-      interpolation: {
-        escapeValue: false, // экранирование уже есть в React, поэтому отключаем
-      },
-    });
+  i18n.use(initReactI18next).init({
+    resources,
+    fallbackLng: 'ru',
+    interpolation: {
+      escapeValue: false,
+    },
+  });
 
   return (
     <AuthProvider>
@@ -69,6 +68,7 @@ const App = () => {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

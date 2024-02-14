@@ -46,7 +46,7 @@ const LoginPage = () => {
   const renderLoginForm = () => {
     return (
       <Form
-        className="col-12 col-md-100 mt-3 mt-mb-0"
+        className="col-12 col-md-8 mt-3 mt-mb-0"
         onSubmit={formik.handleSubmit}
       >
         <h1 className="text-center mb-4">{t('loginPage.title')}</h1>
@@ -100,7 +100,9 @@ const LoginPage = () => {
         <div className="row justify-content-center align-content-center h-100">
           <div className="col-12 col-md-8 col-xxl-6">
             <div className="card shadow-sm">
-              <div className="card-body row p-5">{renderLoginForm()}</div>
+              <div className="card-body row p-5 d-flex justify-content-center">
+                {renderLoginForm()}
+              </div>
               <div className="card-footer p-4">
                 <div className="d-flex justify-content-center">
                   <span>{t('loginPage.footer.text')}</span>

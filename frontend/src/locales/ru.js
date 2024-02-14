@@ -46,6 +46,11 @@ const ru = {
         rmTitle: 'Уверены?',
       },
     },
+    notFoundPage: {
+      title: 'Страница не найдена',
+      text: 'Но вы можете перейти на главную страницу',
+      link: 'На главную страницу',
+    },
     validationSchema: {
       generalErr: {
         length: 'От 3 до 20 символов',
