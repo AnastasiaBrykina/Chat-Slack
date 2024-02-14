@@ -4,6 +4,7 @@ import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import useAuth from '../hooks/authHook';
 import Navbar from './Navbar';
@@ -15,13 +16,14 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const auth = useAuth();
   const { logIn, logOut } = auth;
-  const dataForm = {
-    username: '',
-    password: '',
-  };
+
+  const { t } = useTranslation();
 
   const formik = useFormik({
-    initialValues: dataForm,
+    initialValues: {
+      username: '',
+      password: '',
+    },
     onSubmit: async (values) => {
       try {
         setDisablesStatus(true);
@@ -47,20 +49,20 @@ const LoginPage = () => {
         className="col-12 col-md-100 mt-3 mt-mb-0"
         onSubmit={formik.handleSubmit}
       >
-        <h1 className="text-center mb-4">Войти</h1>
+        <h1 className="text-center mb-4">{t('loginPage.title')}</h1>
         <Form.Group className="form-floating mb-3" controlId="username">
           <Form.Control
             name="username"
             autoComplete="username"
             required
             type="text"
-            placeholder="Ваш ник"
+            placeholder={t('loginPage.form.fields.username')}
             onChange={formik.handleChange}
             value={formik.values.username}
             disabled={isDisabled}
             isInvalid={isInvalid}
           />
-          <Form.Label>Ваш ник</Form.Label>
+          <Form.Label>{t('loginPage.form.fields.username')}</Form.Label>
         </Form.Group>
         <Form.Group className="form-floating mb-4" controlId="password">
           <Form.Control
@@ -68,16 +70,16 @@ const LoginPage = () => {
             autoComplete="current-password"
             required
             type="password"
-            placeholder="Пароль"
+            placeholder={t('loginPage.form.fields.password')}
             onChange={formik.handleChange}
             value={formik.values.password}
             disabled={isDisabled}
             isInvalid={isInvalid}
           />
           <Form.Control.Feedback type="invalid">
-            Неверные имя пользователя или пароль
+            {t('loginPage.form.errors')}
           </Form.Control.Feedback>
-          <Form.Label>Пароль</Form.Label>
+          <Form.Label>{t('loginPage.form.fields.password')}</Form.Label>
         </Form.Group>
         <Button
           type="submit"
@@ -85,7 +87,7 @@ const LoginPage = () => {
           className="w-100 mb-3"
           disabled={isDisabled}
         >
-          Войти
+          {t('buttons.enter')}
         </Button>
       </Form>
     );
@@ -101,14 +103,14 @@ const LoginPage = () => {
               <div className="card-body row p-5">{renderLoginForm()}</div>
               <div className="card-footer p-4">
                 <div className="d-flex justify-content-center">
-                  <span>Нет аккаунта?</span>
+                  <span>{t('loginPage.footer.text')}</span>
                   <Button
                     href="/signup"
                     variant="link"
                     className="p-0"
                     disabled={isDisabled}
                   >
-                    Регистрация
+                    {t('buttons.loogin')}
                   </Button>
                 </div>
               </div>

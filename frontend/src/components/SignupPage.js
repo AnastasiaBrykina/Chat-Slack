@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import useAuth from '../hooks/authHook';
 import Navbar from './Navbar';
@@ -15,14 +16,14 @@ const SignupPage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
-  const dataForm = {
-    username: '',
-    password: '',
-    confirmPassword: '',
-  };
+  const { t } = useTranslation();
 
   const formik = useFormik({
-    initialValues: dataForm,
+    initialValues: {
+      username: '',
+      password: '',
+      confirmPassword: '',
+    },
     onSubmit: async ({ username, password }) => {
       const { logIn, logOut } = auth;
       try {
@@ -45,15 +46,15 @@ const SignupPage = () => {
     },
     validationSchema: Yup.object().shape({
       username: Yup.string()
-        .min(3, 'От 3 до 20 символов')
-        .max(20, 'От 3 до 20 символов')
-        .required('Обязательное поле'),
+        .min(3, t('validationSchema.generalErr.length'))
+        .max(20, t('validationSchema.generalErr.length'))
+        .required(t('validationSchema.generalErr.required')),
       password: Yup.string()
-        .min(6, 'Не менее 6 символов')
-        .required('Обязательное поле'),
+        .min(6, t('validationSchema.password.length'))
+        .required(t('validationSchema.generalErr.required')),
       confirmPassword: Yup.string().oneOf(
         [Yup.ref('password')],
-        'Пароли должны совпадать'
+        t('validationSchema.password.confirm')
       ),
     }),
   });
@@ -61,10 +62,10 @@ const SignupPage = () => {
   const renderSignupForm = () => {
     return (
       <Form className="w-50" onSubmit={formik.handleSubmit}>
-        <h1 className="text-center mb-4">Регистрация</h1>
+        <h1 className="text-center mb-4">{t('signupPage.title')}</h1>
         <Form.Group className="form-floating mb-3" controlId="username">
           <Form.Control
-            placeholder="От 3 до 20 символов"
+            placeholder={t('validationSchema.generalErr.length')}
             name="username"
             autoComplete="username"
             required
@@ -73,14 +74,14 @@ const SignupPage = () => {
             isInvalid={!!formik.errors.username || isInvalid}
             disabled={isDisabled}
           ></Form.Control>
-          <Form.Label>Имя пользователя</Form.Label>
+          <Form.Label>{t('signupPage.form.fields.username')}</Form.Label>
           <Form.Control.Feedback type="invalid" tooltip>
             {formik.errors.username || ''}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="form-floating mb-3" controlId="password">
           <Form.Control
-            placeholder="Не менее 6 символов"
+            placeholder={t('validationSchema.password.length')}
             name="password"
             aria-describedby="passwordHelpBlock"
             required
@@ -91,14 +92,14 @@ const SignupPage = () => {
             isInvalid={!!formik.errors.password || isInvalid}
             disabled={isDisabled}
           ></Form.Control>
-          <Form.Label>Пароль</Form.Label>
+          <Form.Label>{t('signupPage.form.fields.password')}</Form.Label>
           <Form.Control.Feedback type="invalid" tooltip>
             {formik.errors.password || ''}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="form-floating mb-3" controlId="confirmPassword">
           <Form.Control
-            placeholder="Пароли должны совпадать"
+            placeholder={t('validationSchema.password.confirm')}
             name="confirmPassword"
             required
             autoComplete="new-password"
@@ -108,10 +109,9 @@ const SignupPage = () => {
             isInvalid={!!formik.errors.confirmPassword || isInvalid}
             disabled={isDisabled}
           ></Form.Control>
-          <Form.Label>Подтвердите пароль</Form.Label>
+          <Form.Label>{t('signupPage.form.fields.confirm')}</Form.Label>
           <Form.Control.Feedback type="invalid" tooltip>
-            {formik.errors.confirmPassword ||
-              'Такой пользователь уже существует'}
+            {formik.errors.confirmPassword || t('signupPage.form.errors')}
           </Form.Control.Feedback>
         </Form.Group>
         <Button
@@ -120,7 +120,7 @@ const SignupPage = () => {
           className="w-100"
           disabled={isDisabled}
         >
-          Зарегистрироваться
+          {t('buttons.signup')}
         </Button>
       </Form>
     );

@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { setModalInfo } from '../slices/modals';
 import { getCurrentUserName } from '../authData';
@@ -14,6 +15,8 @@ const ChannelsAddModal = () => {
   const [isDisabled, setDisablesStatus] = useState(false);
   const channels = useSelector((state) => state.channels.channels);
   const channelsNames = channels.map(({ name }) => name);
+
+  const { t } = useTranslation();
 
   useEffect(() => inputEl.current.focus(), []);
 
@@ -38,10 +41,10 @@ const ChannelsAddModal = () => {
     validationSchema: Yup.object().shape({
       name: Yup.string()
         .trim()
-        .min(3, 'От 3 до 20 символов')
-        .max(20, 'От 3 до 20 символов')
-        .notOneOf(channelsNames, 'Должно быть уникальным')
-        .required('Обязательное поле'),
+        .min(3, t('validationSchema.generalErr.length'))
+        .max(20, t('validationSchema.generalErr.length'))
+        .notOneOf(channelsNames, t('validationSchema.channel.unique'))
+        .required(t('validationSchema.generalErr.required')),
     }),
   });
 
@@ -54,7 +57,7 @@ const ChannelsAddModal = () => {
     >
       <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
-          Добавить канал
+          {t('chatPage.modals.add')}
         </Modal.Title>
         <button
           type="button"
@@ -89,10 +92,10 @@ const ChannelsAddModal = () => {
               className="me-2"
               disabled={isDisabled}
             >
-              Отменить
+              {t('buttons.cancel')}
             </Button>
             <Button type="submit" disabled={isDisabled}>
-              Отправить
+              {t('buttons.send')}
             </Button>
           </div>
         </Form>

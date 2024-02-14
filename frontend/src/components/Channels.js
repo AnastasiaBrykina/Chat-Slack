@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { loadChannels, selectedChannel } from '../slices/channels';
 import { setModalInfo } from '../slices/modals';
@@ -13,6 +14,8 @@ const Channels = () => {
   const [isDisabled, setDisablesStatus] = useState(false);
   const channels = useSelector((state) => state.channels.channels);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchChannels = async () => {
@@ -82,7 +85,7 @@ const Channels = () => {
                   )
                 }
               >
-                Удалить
+                {t('buttons.remove')}
               </Dropdown.Item>
               <Dropdown.Item
                 href="#/action-2"
@@ -95,7 +98,7 @@ const Channels = () => {
                   )
                 }
               >
-                Переименовать
+                {t('buttons.rename')}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -127,7 +130,7 @@ const Channels = () => {
   return (
     <>
       <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
-        <b>Каналы</b>
+        <b>{t('chatPage.channels.title')}</b>
         <button
           type="button"
           className="p-0 text-primary btn btn-group-vertical"

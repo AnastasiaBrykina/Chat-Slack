@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import restApi from '../restApi';
 import { loadMessages } from '../slices/messages';
@@ -15,6 +16,8 @@ const Messages = () => {
   const [isDisabled, setDisablesStatus] = useState(false);
   const messages = useSelector((state) => state.messages.messages);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     inputEl.current.focus();
@@ -63,6 +66,8 @@ const Messages = () => {
     ? messages.filter(({ channelId }) => channelId === currentChannel.id)
     : [];
 
+  const currentMessagesLength = currentMessages.length;
+
   const renderChannelInfo = () => {
     if (!currentChannel) {
       return null;
@@ -73,7 +78,11 @@ const Messages = () => {
         <p className="m-0">
           <b># {currentChannel.name}</b>
         </p>
-        <span>{currentMessages.length} сообщения</span>
+        <span>
+          {t('chatPage.messages.message', {
+            count: currentMessagesLength,
+          })}
+        </span>
       </div>
     );
   };
@@ -102,14 +111,11 @@ const Messages = () => {
       </div>
       <div className="mt-auto px-5 py-3">
         <Form className="border rounded-2" onSubmit={formik.handleSubmit}>
-          <Form.Control.Feedback type="invalid">
-            Неверные имя пользователя или пароль
-          </Form.Control.Feedback>
           <InputGroup id="body">
             <Form.Control
               id="messagesInput"
               name="body"
-              placeholder="Введите сообщение..."
+              placeholder={t('chatPage.messages.form.body')}
               aria-label="Новое сообщение"
               className="border-0 p-0 ps-2"
               onChange={formik.handleChange}
@@ -123,7 +129,7 @@ const Messages = () => {
               type="submit"
               disabled={isDesabledBtn}
             >
-              Отправить
+              {t('buttons.send')}
             </Button>
           </InputGroup>
         </Form>

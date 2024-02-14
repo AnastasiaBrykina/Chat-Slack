@@ -6,12 +6,15 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { useState } from 'react';
+import i18next from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
 import LoginPage from './LoginPage';
 import ChatPage from './ChatPage';
 import AuthContext from '../context/context';
 import SignupPage from './SignupPage';
 import { getCurrentUser } from '../authData';
+import resources from '../locales/index.js';
 
 const AuthProvider = ({ children }) => {
   const currentUser = getCurrentUser();
@@ -41,6 +44,17 @@ const PrivateRoute = ({ children }) => {
 };
 
 const App = () => {
+  const i18n = i18next.createInstance();
+  i18n
+    .use(initReactI18next) // передаем экземпляр i18n в react-i18next, который сделает его доступным для всех компонентов через context API.
+    .init({
+      resources, // передаем переводы текстов интерфейса в формате JSON
+      fallbackLng: 'ru', // если переводы на языке пользователя недоступны, то будет использоваться язык, указанный в этом поле
+      interpolation: {
+        escapeValue: false, // экранирование уже есть в React, поэтому отключаем
+      },
+    });
+
   return (
     <AuthProvider>
       <BrowserRouter>

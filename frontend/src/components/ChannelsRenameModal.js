@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { setModalInfo } from '../slices/modals';
 import restApi from '../restApi';
@@ -18,10 +19,12 @@ const ChannelsRenameModal = () => {
 
   const channelsNames = channels.map(({ name }) => name);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     inputEl.current.focus();
     inputEl.current.select();
-  }, []);
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -41,10 +44,10 @@ const ChannelsRenameModal = () => {
     validationSchema: Yup.object().shape({
       name: Yup.string()
         .trim()
-        .min(3, 'От 3 до 20 символов')
-        .max(20, 'От 3 до 20 символов')
-        .notOneOf(channelsNames, 'Должно быть уникальным')
-        .required('Обязательное поле'),
+        .min(3, t('validationSchema.generalErr.length'))
+        .max(20, t('validationSchema.generalErr.length'))
+        .notOneOf(channelsNames, t('validationSchema.channel.unique'))
+        .required(t('validationSchema.generalErr.required')),
     }),
   });
 
@@ -57,7 +60,7 @@ const ChannelsRenameModal = () => {
     >
       <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
-          Переименовать канал
+          {t('chatPage.modals.rename')}
         </Modal.Title>
         <button
           type="button"
@@ -92,10 +95,10 @@ const ChannelsRenameModal = () => {
               className="me-2"
               disabled={isDisabled}
             >
-              Отменить
+              {t('buttons.cancel')}
             </Button>
             <Button type="submit" disabled={isDisabled}>
-              Отправить
+              {t('buttons.send')}
             </Button>
           </div>
         </Form>

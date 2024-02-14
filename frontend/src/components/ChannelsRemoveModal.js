@@ -1,6 +1,7 @@
 import { Modal, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { setModalInfo } from '../slices/modals';
 import { selectedChannel } from '../slices/channels';
@@ -14,6 +15,8 @@ const ChannelsRemoveModal = () => {
   const modalInfo = useSelector((state) => state.modals.modalInfo);
 
   const { channel } = modalInfo;
+
+  const { t } = useTranslation();
 
   const onRemoveNundler = async (channelId) => {
     try {
@@ -37,7 +40,7 @@ const ChannelsRemoveModal = () => {
       centered
     >
       <Modal.Header>
-        <Modal.Title>Удалить канал</Modal.Title>
+        <Modal.Title>{t('chatPage.modals.remove')}</Modal.Title>
         <button
           type="button"
           className="btn-close"
@@ -47,7 +50,7 @@ const ChannelsRemoveModal = () => {
         />
       </Modal.Header>
       <Modal.Body>
-        <p className="lead">Уверены?</p>
+        <p className="lead">{t('chatPage.modals.rmTitle')}</p>
         <div className="d-flex justify-content-end">
           <Button
             variant="secondary"
@@ -56,7 +59,7 @@ const ChannelsRemoveModal = () => {
             onClick={() => dispatch(setModalInfo({ type: null }))}
             disabled={isDisabled}
           >
-            Отменить
+            {t('buttons.cancel')}
           </Button>
           <Button
             type="button"
@@ -64,7 +67,7 @@ const ChannelsRemoveModal = () => {
             onClick={() => onRemoveNundler(channel.id)}
             disabled={isDisabled}
           >
-            Удалить
+            {t('buttons.remove')}
           </Button>
         </div>
       </Modal.Body>
