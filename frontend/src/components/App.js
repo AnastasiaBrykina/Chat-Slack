@@ -8,6 +8,8 @@ import {
 import { useState } from 'react';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import LoginPage from './LoginPage';
 import ChatPage from './ChatPage';
@@ -71,6 +73,7 @@ const App = () => {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </AuthProvider>
   );
 };

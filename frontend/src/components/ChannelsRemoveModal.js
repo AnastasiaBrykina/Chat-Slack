@@ -2,6 +2,7 @@ import { Modal, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import { setModalInfo } from '../slices/modals';
 import { selectedChannel } from '../slices/channels';
@@ -26,8 +27,10 @@ const ChannelsRemoveModal = () => {
         dispatch(selectedChannel(channels[0]));
       }
       dispatch(setModalInfo({ type: null }));
+      toast.success(t('toast.rmChannel'));
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      toast.error(t('toast.error'));
     }
     setDisablesStatus(false);
   };

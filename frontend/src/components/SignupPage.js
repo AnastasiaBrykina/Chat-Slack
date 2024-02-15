@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import useAuth from '../hooks/authHook';
 import Navbar from './Navbar';
@@ -28,15 +29,21 @@ const SignupPage = () => {
       const { logIn, logOut } = auth;
       try {
         setDisablesStatus(true);
+        setValidationStatus(false);
         const res = await axios.post(routes.signupPath(), {
           username,
           password,
         });
         localStorage.setItem('currentUser', JSON.stringify(res.data));
         logIn();
-        setValidationStatus(false);
         navigate('/');
       } catch (e) {
+        console.error(e);
+        if (e.isAxiosError && e.message === 'Network Error') {
+          toast.error(t('toast.error'));
+          setDisablesStatus(false);
+          return;
+        }
         if (e.response.status === 409) {
           setValidationStatus(true);
         }

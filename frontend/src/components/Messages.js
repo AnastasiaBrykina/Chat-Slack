@@ -4,10 +4,14 @@ import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import * as filter from 'leo-profanity';
 
 import restApi from '../restApi';
 import { loadMessages } from '../slices/messages';
 import { getCurrentUserName } from '../authData';
+
+filter.add(filter.getDictionary('ru'));
 
 const Messages = () => {
   const dispatch = useDispatch();
@@ -30,6 +34,12 @@ const Messages = () => {
         const res = await restApi.loadMessages();
         dispatch(loadMessages(res.data));
       } catch (e) {
+        console.error(e);
+        if (e.isAxiosError && e.message === 'Network Error') {
+          toast.error(t('toast.error'));
+          setDisablesStatus(false);
+          return;
+        }
         if (e.response.status === 401) {
           navigate('login');
         }
@@ -44,16 +54,18 @@ const Messages = () => {
       body: '',
     },
     onSubmit: async ({ body }) => {
+      const filterBody = filter.clean(body);
       try {
         setDisablesStatus(true);
         const newMessage = {
-          body,
+          body: filterBody,
           channelId: currentChannel.id,
           username: getCurrentUserName(),
         };
         await restApi.newMessage(newMessage);
       } catch (e) {
-        console.log(e);
+        console.error(e);
+        toast.error(t('toast.error'));
       }
       setDisablesStatus(false);
       formik.values.body = '';

@@ -74,6 +74,12 @@ const ru = {
       enter: 'Войти',
       exit: 'Выйти',
     },
+    toast: {
+      addChannel: 'Канал создан',
+      rmChannel: 'Канал удален',
+      rnChannel: 'Канал переименован',
+      error: 'Ошибка соединения',
+    },
   },
 };
 

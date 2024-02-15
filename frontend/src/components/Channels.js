@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import { loadChannels, selectedChannel } from '../slices/channels';
 import { setModalInfo } from '../slices/modals';
@@ -24,6 +25,13 @@ const Channels = () => {
         const res = await restApi.loadChannels();
         dispatch(loadChannels(res.data));
       } catch (e) {
+        console.error(e);
+        if (e.isAxiosError && e.message === 'Network Error') {
+          toast.error(t('toast.error'));
+          setDisablesStatus(false);
+          return;
+        }
+
         if (e.response.status === 401) {
           navigate('login');
         }
@@ -37,72 +45,59 @@ const Channels = () => {
     return null;
   }
 
-  const onClickChannelHundler = (channel) => (e) => {
-    if (e.target.id === 'react-aria1269412036-1') {
-      e.stopPropagation();
-      return;
-    }
-
-    const inputMessages = document.querySelector('#messagesInput');
-    inputMessages.focus();
-    dispatch(selectedChannel(channel));
-  };
-
   const getBtnVariant = (btnId) =>
     btnId === currentChannel.id ? 'secondary' : '';
 
-  const rendeControlButton = (channel) => {
+  const rendeChannelButton = (channel) => {
     const { id, name, removable } = channel;
     if (removable) {
       return (
-        <div>
-          <Dropdown as={ButtonGroup} className="d-flex">
-            <Button
-              variant={getBtnVariant(id)}
-              className="w-100 rounded-0 text-start text-truncate"
-              disabled={isDisabled}
+        <Dropdown as={ButtonGroup} className="d-flex">
+          <Button
+            variant={getBtnVariant(id)}
+            className="w-100 rounded-0 text-start text-truncate"
+            disabled={isDisabled}
+            onClick={() => dispatch(selectedChannel(channel))}
+          >
+            <span className="me-1">#</span>
+            {name}
+          </Button>
+
+          <Dropdown.Toggle
+            split
+            variant={getBtnVariant(id)}
+            className="flex-grow-0"
+          />
+
+          <Dropdown.Menu>
+            <Dropdown.Item
+              href="#/action-1"
+              onClick={() =>
+                dispatch(
+                  setModalInfo({
+                    type: 'removing',
+                    channel,
+                  })
+                )
+              }
             >
-              <span className="me-1">#</span>
-              {name}
-            </Button>
-
-            <Dropdown.Toggle
-              split
-              variant={getBtnVariant(id)}
-              className="flex-grow-0"
-              id="react-aria1269412036-1"
-            />
-
-            <Dropdown.Menu onClick={(e) => e.stopPropagation()}>
-              <Dropdown.Item
-                href="#/action-1"
-                onClick={() =>
-                  dispatch(
-                    setModalInfo({
-                      type: 'removing',
-                      channel,
-                    })
-                  )
-                }
-              >
-                {t('buttons.remove')}
-              </Dropdown.Item>
-              <Dropdown.Item
-                href="#/action-2"
-                onClick={() =>
-                  dispatch(
-                    setModalInfo({
-                      type: 'renaming',
-                      channel,
-                    })
-                  )
-                }
-              >
-                {t('buttons.rename')}
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
+              {t('buttons.remove')}
+            </Dropdown.Item>
+            <Dropdown.Item
+              href="#/action-2"
+              onClick={() =>
+                dispatch(
+                  setModalInfo({
+                    type: 'renaming',
+                    channel,
+                  })
+                )
+              }
+            >
+              {t('buttons.rename')}
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       );
     }
 
@@ -110,6 +105,7 @@ const Channels = () => {
       <Button
         variant={getBtnVariant(id)}
         className="w-100 rounded-0 text-start"
+        onClick={() => dispatch(selectedChannel(channel))}
       >
         <span className="me-1">#</span>
         {name}
@@ -118,12 +114,8 @@ const Channels = () => {
   };
 
   const renderChannel = (channel) => (
-    <li
-      key={channel.id}
-      className="nav-item w-100"
-      onClick={onClickChannelHundler(channel)}
-    >
-      {rendeControlButton(channel)}
+    <li key={channel.id} className="nav-item w-100">
+      {rendeChannelButton(channel)}
     </li>
   );
 

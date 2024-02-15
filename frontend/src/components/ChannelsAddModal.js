@@ -4,10 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import * as filter from 'leo-profanity';
 
 import { setModalInfo } from '../slices/modals';
 import { getCurrentUserName } from '../authData';
 import restApi from '../restApi';
+
+filter.add(filter.getDictionary('ru'));
 
 const ChannelsAddModal = () => {
   const dispatch = useDispatch();
@@ -25,16 +29,19 @@ const ChannelsAddModal = () => {
       name: '',
     },
     onSubmit: async ({ name }) => {
+      const filterName = filter.clean(name);
       try {
         setDisablesStatus(true);
         await restApi.newChannel({
-          name: name.trim(),
+          name: filterName.trim(),
           username: getCurrentUserName(),
         });
         dispatch(setModalInfo({ type: null }));
+        toast.success(t('toast.addChannel'));
         formik.values.name = '';
       } catch (e) {
-        console.log(e);
+        console.error(e);
+        toast.error(t('toast.error'));
       }
       setDisablesStatus(false);
     },

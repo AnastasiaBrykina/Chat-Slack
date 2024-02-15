@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import { setModalInfo } from '../slices/modals';
 import restApi from '../restApi';
@@ -14,17 +15,15 @@ const ChannelsRenameModal = () => {
   const [isDisabled, setDisablesStatus] = useState(false);
   const channels = useSelector((state) => state.channels.channels);
   const modalInfo = useSelector((state) => state.modals.modalInfo);
-
-  const { channel } = modalInfo;
-
-  const channelsNames = channels.map(({ name }) => name);
-
   const { t } = useTranslation();
 
   useEffect(() => {
-    inputEl.current.focus();
+    console.log('effect');
     inputEl.current.select();
-  });
+  }, []);
+
+  const { channel } = modalInfo;
+  const channelsNames = channels.map(({ name }) => name);
 
   const formik = useFormik({
     initialValues: {
@@ -36,14 +35,15 @@ const ChannelsRenameModal = () => {
         const editedChannel = { name: name.trim() };
         await restApi.renameChannel({ id: channel.id, editedChannel });
         dispatch(setModalInfo({ type: null }));
+        toast.success(t('toast.rnChannel'));
       } catch (e) {
-        console.log(e);
+        console.error(e);
+        toast.error(t('toast.error'));
       }
       setDisablesStatus(false);
     },
     validationSchema: Yup.object().shape({
       name: Yup.string()
-        .trim()
         .min(3, t('validationSchema.generalErr.length'))
         .max(20, t('validationSchema.generalErr.length'))
         .notOneOf(channelsNames, t('validationSchema.channel.unique'))

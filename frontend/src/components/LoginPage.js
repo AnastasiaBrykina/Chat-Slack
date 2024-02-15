@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import useAuth from '../hooks/authHook';
 import Navbar from './Navbar';
@@ -26,15 +27,20 @@ const LoginPage = () => {
     },
     onSubmit: async (values) => {
       try {
+        setValidationStatus(false);
         setDisablesStatus(true);
         const res = await axios.post(routes.loginPath(), values);
         window.localStorage.setItem('currentUser', JSON.stringify(res.data));
         logIn();
-        setValidationStatus(false);
         navigate('/');
       } catch (e) {
-        const { status } = e.response;
-        if (status === 401) {
+        console.error(e);
+        if (e.isAxiosError && e.message === 'Network Error') {
+          toast.error(t('toast.error'));
+          setDisablesStatus(false);
+          return;
+        }
+        if (e.response.status === 401) {
           setValidationStatus(true);
         }
         logOut();
