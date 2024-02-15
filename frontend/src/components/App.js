@@ -19,7 +19,7 @@ import SignupPage from './SignupPage';
 import NotFoundPage from './NotFoundPage';
 import { getCurrentUser } from '../authData';
 import resources from '../locales/index.js';
-import rollbarConfig, { TestError } from '../rollBar';
+import rollbarConfig from '../rollBar';
 
 const AuthProvider = ({ children }) => {
   const currentUser = getCurrentUser();
@@ -61,7 +61,6 @@ const App = () => {
   return (
     <Provider config={rollbarConfig}>
       <ErrorBoundary>
-        <TestError />
         <AuthProvider>
           <BrowserRouter>
             <Routes>
