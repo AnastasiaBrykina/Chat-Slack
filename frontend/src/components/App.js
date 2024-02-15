@@ -10,6 +10,7 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Provider } from '@rollbar/react';
 
 import LoginPage from './LoginPage';
 import ChatPage from './ChatPage';
@@ -18,6 +19,7 @@ import SignupPage from './SignupPage';
 import NotFoundPage from './NotFoundPage';
 import { getCurrentUser } from '../authData';
 import resources from '../locales/index.js';
+import rollbarConfig from '../rollBar';
 
 const AuthProvider = ({ children }) => {
   const currentUser = getCurrentUser();
@@ -57,24 +59,26 @@ const App = () => {
   });
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <ChatPage />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </BrowserRouter>
-      <ToastContainer />
-    </AuthProvider>
+    <Provider config={rollbarConfig}>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <ChatPage />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </BrowserRouter>
+        <ToastContainer />
+      </AuthProvider>
+    </Provider>
   );
 };
 
