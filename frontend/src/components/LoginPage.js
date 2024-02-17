@@ -2,14 +2,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import useAuth from '../hooks/authHook';
 import Navbar from './Navbar';
-import routes from '../routes';
+import restApi from '../restApi';
 
 const LoginPage = () => {
   const [isInvalid, setValidationStatus] = useState(false);
@@ -29,8 +28,8 @@ const LoginPage = () => {
       try {
         setValidationStatus(false);
         setDisablesStatus(true);
-        const res = await axios.post(routes.loginPath(), values);
-        window.localStorage.setItem('currentUser', JSON.stringify(res.data));
+        const res = await restApi.login(values);
+        localStorage.setItem('currentUser', JSON.stringify(res.data));
         logIn();
         navigate('/');
       } catch (e) {

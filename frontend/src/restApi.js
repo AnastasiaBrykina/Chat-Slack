@@ -12,6 +12,12 @@ const restApi = {
     axios.get(routes.messagesPath(), {
       headers: getAuthHeader(),
     }),
+  login: (values) => axios.post(routes.loginPath(), values),
+  signup: (username, password) =>
+    axios.post(routes.signupPath(), {
+      username,
+      password,
+    }),
   newChannel: (newChannel) =>
     axios.post(routes.channelsPath(), newChannel, { headers: getAuthHeader() }),
   removeChannel: (id) =>

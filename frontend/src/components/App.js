@@ -11,6 +11,7 @@ import { initReactI18next } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Provider, ErrorBoundary } from '@rollbar/react';
+import * as filter from 'leo-profanity';
 
 import LoginPage from './LoginPage';
 import ChatPage from './ChatPage';
@@ -49,6 +50,8 @@ const PrivateRoute = ({ children }) => {
 };
 
 const App = () => {
+  filter.add(filter.getDictionary('ru'));
+
   const i18n = i18next.createInstance();
   i18n.use(initReactI18next).init({
     resources,

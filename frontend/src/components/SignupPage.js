@@ -2,14 +2,13 @@ import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import useAuth from '../hooks/authHook';
 import Navbar from './Navbar';
-import routes from '../routes';
+import restApi from '../restApi';
 
 const SignupPage = () => {
   const [isInvalid, setValidationStatus] = useState(false);
@@ -30,10 +29,7 @@ const SignupPage = () => {
       try {
         setDisablesStatus(true);
         setValidationStatus(false);
-        const res = await axios.post(routes.signupPath(), {
-          username,
-          password,
-        });
+        const res = await restApi.signup(username, password);
         localStorage.setItem('currentUser', JSON.stringify(res.data));
         logIn();
         navigate('/');

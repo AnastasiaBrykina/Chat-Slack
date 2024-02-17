@@ -11,8 +11,6 @@ import { setModalInfo } from '../slices/modals';
 import { getCurrentUserName } from '../authData';
 import restApi from '../restApi';
 
-filter.add(filter.getDictionary('ru'));
-
 const ChannelsAddModal = () => {
   const dispatch = useDispatch();
   const inputEl = useRef(null);

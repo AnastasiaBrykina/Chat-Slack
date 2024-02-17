@@ -18,7 +18,6 @@ const ChannelsRenameModal = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    console.log('effect');
     inputEl.current.select();
   }, []);
 

@@ -11,12 +11,11 @@ import restApi from '../restApi';
 import { loadMessages } from '../slices/messages';
 import { getCurrentUserName } from '../authData';
 
-filter.add(filter.getDictionary('ru'));
-
 const Messages = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const inputEl = useRef(null);
+  const refMessage = useRef(null);
   const [isDisabled, setDisablesStatus] = useState(false);
   const messages = useSelector((state) => state.messages.messages);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
@@ -25,6 +24,10 @@ const Messages = () => {
 
   useEffect(() => {
     inputEl.current.focus();
+
+    if (refMessage.current) {
+      refMessage.current.scrollIntoView(false);
+    }
   });
 
   useEffect(() => {
@@ -107,7 +110,7 @@ const Messages = () => {
     return (
       <>
         {messages.map(({ id, body, username }) => (
-          <div key={id} className="text-break mb-2">
+          <div key={id} className="text-break mb-2" ref={refMessage}>
             <b>{username}</b>: {body}
           </div>
         ))}

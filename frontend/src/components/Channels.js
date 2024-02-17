@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -13,10 +13,19 @@ const Channels = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isDisabled, setDisablesStatus] = useState(false);
+  const refChannel = useRef(null);
   const channels = useSelector((state) => state.channels.channels);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
 
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (refChannel.current) {
+      if (refChannel.current.id === currentChannel.id) {
+        refChannel.current.scrollIntoView(false);
+      }
+    }
+  });
 
   useEffect(() => {
     const fetchChannels = async () => {
@@ -71,7 +80,6 @@ const Channels = () => {
 
           <Dropdown.Menu>
             <Dropdown.Item
-              href="#/action-1"
               onClick={() =>
                 dispatch(
                   setModalInfo({
@@ -84,7 +92,6 @@ const Channels = () => {
               {t('buttons.remove')}
             </Dropdown.Item>
             <Dropdown.Item
-              href="#/action-2"
               onClick={() =>
                 dispatch(
                   setModalInfo({
@@ -114,7 +121,12 @@ const Channels = () => {
   };
 
   const renderChannel = (channel) => (
-    <li key={channel.id} className="nav-item w-100">
+    <li
+      key={channel.id}
+      id={channel.id}
+      ref={refChannel}
+      className="nav-item w-100"
+    >
       {rendeChannelButton(channel)}
     </li>
   );

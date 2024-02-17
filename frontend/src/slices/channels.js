@@ -20,6 +20,7 @@ const channelsSlice = createSlice({
     },
     addChannel: (state, { payload }) => {
       state.channels.push(payload);
+      state.selectedChannel = payload;
     },
     removeChannel: (state, { payload }) => {
       const filteredChannels = state.channels.filter(
