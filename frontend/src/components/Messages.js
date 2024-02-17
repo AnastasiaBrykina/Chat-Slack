@@ -22,13 +22,13 @@ const Messages = () => {
 
   const { t } = useTranslation();
 
-  // useEffect(() => {
-  //   inputEl.current.focus();
+  useEffect(() => {
+    inputEl.current.focus();
 
-  //   if (refMessage.current) {
-  //     refMessage.current.scrollIntoView(false);
-  //   }
-  // });
+    if (refMessage.current) {
+      refMessage.current.scrollIntoView();
+    }
+  });
 
   useEffect(() => {
     const fetchMessages = async () => {

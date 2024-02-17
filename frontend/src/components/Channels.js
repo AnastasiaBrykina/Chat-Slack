@@ -22,7 +22,7 @@ const Channels = () => {
   useEffect(() => {
     if (refChannel.current) {
       if (refChannel.current.id === currentChannel.id) {
-        refChannel.current.scrollIntoView(false);
+        refChannel.current.scrollIntoView();
       }
     }
   });
