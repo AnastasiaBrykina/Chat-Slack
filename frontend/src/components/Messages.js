@@ -22,13 +22,13 @@ const Messages = () => {
 
   const { t } = useTranslation();
 
-  useEffect(() => {
-    inputEl.current.focus();
+  // useEffect(() => {
+  //   inputEl.current.focus();
 
-    if (refMessage.current) {
-      refMessage.current.scrollIntoView(false);
-    }
-  });
+  //   if (refMessage.current) {
+  //     refMessage.current.scrollIntoView(false);
+  //   }
+  // });
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -117,6 +117,8 @@ const Messages = () => {
       </>
     );
   };
+
+  console.log('message');
 
   return (
     <div className="d-flex flex-column h-100">
