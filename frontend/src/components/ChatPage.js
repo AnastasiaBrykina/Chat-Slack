@@ -1,6 +1,6 @@
 import Navbar from './Navbar';
 import Channels from './Channels';
-import Messages from './Messages';
+import Messages from './Messages/Messages';
 import Modals from './Modals';
 
 const ChatPage = () => (

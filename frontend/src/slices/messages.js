@@ -4,6 +4,7 @@ import { removeChannel } from './channels';
 
 const initialState = {
   messages: [],
+  isLoading: false,
 };
 
 const messagesSlice = createSlice({
@@ -16,6 +17,9 @@ const messagesSlice = createSlice({
     addMessage: (state, { payload }) => {
       state.messages.push(payload);
     },
+    setLoadStatus: (state, { payload }) => {
+      state.isLoading = payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(removeChannel, (state, { payload }) => {
@@ -27,5 +31,6 @@ const messagesSlice = createSlice({
   },
 });
 
-export const { loadMessages, addMessage } = messagesSlice.actions;
+export const { loadMessages, addMessage, setLoadStatus } =
+  messagesSlice.actions;
 export default messagesSlice.reducer;
