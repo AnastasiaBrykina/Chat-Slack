@@ -57,77 +57,75 @@ const SignupPage = () => {
         .required(t('validationSchema.generalErr.required')),
       confirmPassword: Yup.string().oneOf(
         [Yup.ref('password')],
-        t('validationSchema.password.confirm')
+        t('validationSchema.password.confirm'),
       ),
     }),
   });
 
-  const renderSignupForm = () => {
-    return (
-      <Form className="w-50" onSubmit={formik.handleSubmit}>
-        <h1 className="text-center mb-4">{t('signupPage.title')}</h1>
-        <Form.Group className="form-floating mb-3" controlId="username">
-          <Form.Control
-            placeholder={t('validationSchema.generalErr.length')}
-            name="username"
-            autoComplete="username"
-            required
-            onChange={formik.handleChange}
-            value={formik.values.username}
-            isInvalid={!!formik.errors.username || isInvalid}
-            disabled={isDisabled}
-          ></Form.Control>
-          <Form.Label>{t('signupPage.form.fields.username')}</Form.Label>
-          <Form.Control.Feedback type="invalid" tooltip>
-            {formik.errors.username || ''}
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group className="form-floating mb-3" controlId="password">
-          <Form.Control
-            placeholder={t('validationSchema.password.length')}
-            name="password"
-            aria-describedby="passwordHelpBlock"
-            required
-            autoComplete="new-password"
-            type="password"
-            onChange={formik.handleChange}
-            value={formik.values.password}
-            isInvalid={!!formik.errors.password || isInvalid}
-            disabled={isDisabled}
-          ></Form.Control>
-          <Form.Label>{t('signupPage.form.fields.password')}</Form.Label>
-          <Form.Control.Feedback type="invalid" tooltip>
-            {formik.errors.password || ''}
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group className="form-floating mb-3" controlId="confirmPassword">
-          <Form.Control
-            placeholder={t('validationSchema.password.confirm')}
-            name="confirmPassword"
-            required
-            autoComplete="new-password"
-            type="password"
-            onChange={formik.handleChange}
-            value={formik.values.confirmPassword}
-            isInvalid={!!formik.errors.confirmPassword || isInvalid}
-            disabled={isDisabled}
-          ></Form.Control>
-          <Form.Label>{t('signupPage.form.fields.confirm')}</Form.Label>
-          <Form.Control.Feedback type="invalid" tooltip>
-            {formik.errors.confirmPassword || t('signupPage.form.errors')}
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Button
-          type="submit"
-          variant="outline-primary"
-          className="w-100"
+  const renderSignupForm = () => (
+    <Form className="w-50" onSubmit={formik.handleSubmit}>
+      <h1 className="text-center mb-4">{t('signupPage.title')}</h1>
+      <Form.Group className="form-floating mb-3" controlId="username">
+        <Form.Control
+          placeholder={t('validationSchema.generalErr.length')}
+          name="username"
+          autoComplete="username"
+          required
+          onChange={formik.handleChange}
+          value={formik.values.username}
+          isInvalid={!!formik.errors.username || isInvalid}
           disabled={isDisabled}
-        >
-          {t('buttons.signup')}
-        </Button>
-      </Form>
-    );
-  };
+        />
+        <Form.Label>{t('signupPage.form.fields.username')}</Form.Label>
+        <Form.Control.Feedback type="invalid" tooltip>
+          {formik.errors.username || ''}
+        </Form.Control.Feedback>
+      </Form.Group>
+      <Form.Group className="form-floating mb-3" controlId="password">
+        <Form.Control
+          placeholder={t('validationSchema.password.length')}
+          name="password"
+          aria-describedby="passwordHelpBlock"
+          required
+          autoComplete="new-password"
+          type="password"
+          onChange={formik.handleChange}
+          value={formik.values.password}
+          isInvalid={!!formik.errors.password || isInvalid}
+          disabled={isDisabled}
+        />
+        <Form.Label>{t('signupPage.form.fields.password')}</Form.Label>
+        <Form.Control.Feedback type="invalid" tooltip>
+          {formik.errors.password || ''}
+        </Form.Control.Feedback>
+      </Form.Group>
+      <Form.Group className="form-floating mb-3" controlId="confirmPassword">
+        <Form.Control
+          placeholder={t('validationSchema.password.confirm')}
+          name="confirmPassword"
+          required
+          autoComplete="new-password"
+          type="password"
+          onChange={formik.handleChange}
+          value={formik.values.confirmPassword}
+          isInvalid={!!formik.errors.confirmPassword || isInvalid}
+          disabled={isDisabled}
+        />
+        <Form.Label>{t('signupPage.form.fields.confirm')}</Form.Label>
+        <Form.Control.Feedback type="invalid" tooltip>
+          {formik.errors.confirmPassword || t('signupPage.form.errors')}
+        </Form.Control.Feedback>
+      </Form.Group>
+      <Button
+        type="submit"
+        variant="outline-primary"
+        className="w-100"
+        disabled={isDisabled}
+      >
+        {t('buttons.signup')}
+      </Button>
+    </Form>
+  );
 
   return (
     <div className="h-100 d-flex flex-column" id="chat">

@@ -1,42 +1,40 @@
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import * as Yup from 'yup';
 import { useEffect, useRef, useState } from 'react';
+import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import * as filter from 'leo-profanity';
 
-import { setModalInfo } from '../slices/modals';
-import { getCurrentUserName } from '../authData';
-import restApi from '../restApi';
+import { setModalInfo } from '../../slices/modals';
+import restApi from '../../restApi';
 
-const ChannelsAddModal = () => {
+const ChannelsRenameModal = () => {
   const dispatch = useDispatch();
   const inputEl = useRef(null);
   const [isDisabled, setDisablesStatus] = useState(false);
   const channels = useSelector((state) => state.channels.channels);
-  const channelsNames = channels.map(({ name }) => name);
-
+  const modalInfo = useSelector((state) => state.modals.modalInfo);
   const { t } = useTranslation();
 
-  useEffect(() => inputEl.current.focus(), []);
+  useEffect(() => {
+    inputEl.current.select();
+  }, []);
+
+  const { channel } = modalInfo;
+  const channelsNames = channels.map(({ name }) => name);
 
   const formik = useFormik({
     initialValues: {
-      name: '',
+      name: channel.name,
     },
     onSubmit: async ({ name }) => {
-      const filterName = filter.clean(name);
       try {
         setDisablesStatus(true);
-        await restApi.newChannel({
-          name: filterName.trim(),
-          username: getCurrentUserName(),
-        });
+        const editedChannel = { name: name.trim() };
+        await restApi.renameChannel({ id: channel.id, editedChannel });
         dispatch(setModalInfo({ type: null }));
-        toast.success(t('toast.addChannel'));
-        formik.values.name = '';
+        toast.success(t('toast.rnChannel'));
       } catch (e) {
         console.error(e);
         toast.error(t('toast.error'));
@@ -62,7 +60,7 @@ const ChannelsAddModal = () => {
     >
       <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
-          {t('chatPage.modals.add')}
+          {t('chatPage.modals.rename')}
         </Modal.Title>
         <button
           type="button"
@@ -75,7 +73,7 @@ const ChannelsAddModal = () => {
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
           <Form.Group controlId="name">
-            <Form.Label className="visually-hidden"></Form.Label>
+            <Form.Label className="visually-hidden" />
             <Form.Control
               name="name"
               className="mb-2"
@@ -109,4 +107,4 @@ const ChannelsAddModal = () => {
   );
 };
 
-export default ChannelsAddModal;
+export default ChannelsRenameModal;

@@ -48,55 +48,53 @@ const LoginPage = () => {
     },
   });
 
-  const renderLoginForm = () => {
-    return (
-      <Form
-        className="col-12 col-md-8 mt-3 mt-mb-0"
-        onSubmit={formik.handleSubmit}
-      >
-        <h1 className="text-center mb-4">{t('loginPage.title')}</h1>
-        <Form.Group className="form-floating mb-3" controlId="username">
-          <Form.Control
-            name="username"
-            autoComplete="username"
-            required
-            type="text"
-            placeholder={t('loginPage.form.fields.username')}
-            onChange={formik.handleChange}
-            value={formik.values.username}
-            disabled={isDisabled}
-            isInvalid={isInvalid}
-          />
-          <Form.Label>{t('loginPage.form.fields.username')}</Form.Label>
-        </Form.Group>
-        <Form.Group className="form-floating mb-4" controlId="password">
-          <Form.Control
-            name="password"
-            autoComplete="current-password"
-            required
-            type="password"
-            placeholder={t('loginPage.form.fields.password')}
-            onChange={formik.handleChange}
-            value={formik.values.password}
-            disabled={isDisabled}
-            isInvalid={isInvalid}
-          />
-          <Form.Control.Feedback type="invalid">
-            {t('loginPage.form.errors')}
-          </Form.Control.Feedback>
-          <Form.Label>{t('loginPage.form.fields.password')}</Form.Label>
-        </Form.Group>
-        <Button
-          type="submit"
-          variant="outline-primary"
-          className="w-100 mb-3"
+  const renderLoginForm = () => (
+    <Form
+      className="col-12 col-md-8 mt-3 mt-mb-0"
+      onSubmit={formik.handleSubmit}
+    >
+      <h1 className="text-center mb-4">{t('loginPage.title')}</h1>
+      <Form.Group className="form-floating mb-3" controlId="username">
+        <Form.Control
+          name="username"
+          autoComplete="username"
+          required
+          type="text"
+          placeholder={t('loginPage.form.fields.username')}
+          onChange={formik.handleChange}
+          value={formik.values.username}
           disabled={isDisabled}
-        >
-          {t('buttons.enter')}
-        </Button>
-      </Form>
-    );
-  };
+          isInvalid={isInvalid}
+        />
+        <Form.Label>{t('loginPage.form.fields.username')}</Form.Label>
+      </Form.Group>
+      <Form.Group className="form-floating mb-4" controlId="password">
+        <Form.Control
+          name="password"
+          autoComplete="current-password"
+          required
+          type="password"
+          placeholder={t('loginPage.form.fields.password')}
+          onChange={formik.handleChange}
+          value={formik.values.password}
+          disabled={isDisabled}
+          isInvalid={isInvalid}
+        />
+        <Form.Control.Feedback type="invalid">
+          {t('loginPage.form.errors')}
+        </Form.Control.Feedback>
+        <Form.Label>{t('loginPage.form.fields.password')}</Form.Label>
+      </Form.Group>
+      <Button
+        type="submit"
+        variant="outline-primary"
+        className="w-100 mb-3"
+        disabled={isDisabled}
+      >
+        {t('buttons.enter')}
+      </Button>
+    </Form>
+  );
 
   return (
     <div className="h-100 d-flex flex-column" id="chat">

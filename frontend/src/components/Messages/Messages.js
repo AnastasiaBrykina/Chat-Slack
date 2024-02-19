@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import restApi from '../../restApi';
 import { loadMessages, setLoadStatus } from '../../slices/messages';
 import MessagesForm from './MessagesForm';
+import useAuth from '../../hooks/authHook';
 
 const Messages = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,8 @@ const Messages = () => {
   const refMessage = useRef(null);
   const messages = useSelector((state) => state.messages.messages);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
+  const auth = useAuth();
+  const { logOut } = auth;
 
   const { t } = useTranslation();
 
@@ -38,6 +41,7 @@ const Messages = () => {
         }
         if (e.response.status === 401) {
           navigate('login');
+          logOut();
         }
       }
       dispatch(setLoadStatus(false));
@@ -59,7 +63,10 @@ const Messages = () => {
     return (
       <div className="bg-light mb-4 p-3 shadow-sm small">
         <p className="m-0">
-          <b># {currentChannel.name}</b>
+          <b>
+            #
+            {currentChannel.name}
+          </b>
         </p>
         <span>
           {t('chatPage.messages.message', {
@@ -70,23 +77,23 @@ const Messages = () => {
     );
   };
 
-  const renderCurrentMessages = (messages) => {
-    if (messages.length === 0) {
+  const renderCurrentMessages = (m) => {
+    if (m.length === 0) {
       return null;
     }
 
     return (
       <>
-        {messages.map(({ id, body, username }) => (
+        {m.map(({ id, body, username }) => (
           <div key={id} className="text-break mb-2" ref={refMessage}>
-            <b>{username}</b>: {body}
+            <b>{username}</b>
+            :
+            {body}
           </div>
         ))}
       </>
     );
   };
-
-  console.log('message');
 
   return (
     <div className="d-flex flex-column h-100">

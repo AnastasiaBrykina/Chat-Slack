@@ -12,7 +12,8 @@ const channelsSlice = createSlice({
     loadChannels: (state, { payload }) => {
       state.channels = payload;
       if (!state.selectedChannel) {
-        state.selectedChannel = payload[0];
+        const [defaultChannel] = payload;
+        state.selectedChannel = defaultChannel;
       }
     },
     selectedChannel: (state, { payload }) => {
@@ -24,7 +25,7 @@ const channelsSlice = createSlice({
     },
     removeChannel: (state, { payload }) => {
       const filteredChannels = state.channels.filter(
-        ({ id }) => id !== payload.id
+        ({ id }) => id !== payload.id,
       );
       state.channels = filteredChannels;
     },

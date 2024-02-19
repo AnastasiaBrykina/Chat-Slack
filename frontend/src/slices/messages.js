@@ -24,13 +24,12 @@ const messagesSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(removeChannel, (state, { payload }) => {
       const filterdMessages = state.messages.filter(
-        ({ channelId }) => channelId !== payload.id
+        ({ channelId }) => channelId !== payload.id,
       );
       state.messages = filterdMessages;
     });
   },
 });
 
-export const { loadMessages, addMessage, setLoadStatus } =
-  messagesSlice.actions;
+export const { loadMessages, addMessage, setLoadStatus } = messagesSlice.actions;
 export default messagesSlice.reducer;

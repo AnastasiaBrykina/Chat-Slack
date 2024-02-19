@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { setModalInfo } from '../slices/modals';
-import { selectedChannel } from '../slices/channels';
-import restApi from '../restApi';
+import { setModalInfo } from '../../slices/modals';
+import { selectedChannel } from '../../slices/channels';
+import restApi from '../../restApi';
 
 const ChannelsRemoveModal = () => {
   const dispatch = useDispatch();

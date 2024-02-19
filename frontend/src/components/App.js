@@ -5,7 +5,7 @@ import {
   useLocation,
   Navigate,
 } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
@@ -24,7 +24,7 @@ import rollbarConfig from '../rollBar';
 
 const AuthProvider = ({ children }) => {
   const currentUser = getCurrentUser();
-  const currentUserIsLoggedIn = currentUser && currentUser.token ? true : false;
+  const currentUserIsLoggedIn = !!(currentUser && currentUser.token);
   const [loggedIn, setLoggedIn] = useState(currentUserIsLoggedIn);
 
   const logIn = () => setLoggedIn(true);
@@ -33,7 +33,7 @@ const AuthProvider = ({ children }) => {
     setLoggedIn(false);
   };
 
-  const value = { loggedIn, logIn, logOut };
+  const value = useMemo(() => ({ loggedIn, logIn, logOut }), [loggedIn, logIn, logOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
@@ -42,11 +42,7 @@ const PrivateRoute = ({ children }) => {
   const location = useLocation();
   const currentUser = localStorage.getItem('currentUser');
 
-  return currentUser ? (
-    children
-  ) : (
-    <Navigate to={'/login'} state={location}></Navigate>
-  );
+  return currentUser ? children : <Navigate to="/login" state={location} />;
 };
 
 const App = () => {
@@ -69,11 +65,11 @@ const App = () => {
             <Routes>
               <Route
                 path="/"
-                element={
+                element={(
                   <PrivateRoute>
                     <ChatPage />
                   </PrivateRoute>
-                }
+                )}
               />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />

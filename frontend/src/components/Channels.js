@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { loadChannels, selectedChannel } from '../slices/channels';
 import { setModalInfo } from '../slices/modals';
 import restApi from '../restApi';
+import useAuth from '../hooks/authHook';
 
 const Channels = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,8 @@ const Channels = () => {
   const refChannel = useRef(null);
   const channels = useSelector((state) => state.channels.channels);
   const currentChannel = useSelector((state) => state.channels.selectedChannel);
+  const auth = useAuth();
+  const { logOut } = auth;
 
   const { t } = useTranslation();
 
@@ -43,6 +46,7 @@ const Channels = () => {
 
         if (e.response.status === 401) {
           navigate('login');
+          logOut();
         }
       }
       setDisablesStatus(false);
@@ -50,12 +54,7 @@ const Channels = () => {
     fetchChannels();
   }, []);
 
-  if (channels.length === 0) {
-    return null;
-  }
-
-  const getBtnVariant = (btnId) =>
-    btnId === currentChannel.id ? 'secondary' : '';
+  const getBtnVariant = (btnId) => (btnId === currentChannel.id ? 'secondary' : '');
 
   const rendeChannelButton = (channel) => {
     const { id, name, removable } = channel;
@@ -80,26 +79,22 @@ const Channels = () => {
 
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() =>
-                dispatch(
-                  setModalInfo({
-                    type: 'removing',
-                    channel,
-                  })
-                )
-              }
+              onClick={() => dispatch(
+                setModalInfo({
+                  type: 'removing',
+                  channel,
+                }),
+              )}
             >
               {t('buttons.remove')}
             </Dropdown.Item>
             <Dropdown.Item
-              onClick={() =>
-                dispatch(
-                  setModalInfo({
-                    type: 'renaming',
-                    channel,
-                  })
-                )
-              }
+              onClick={() => dispatch(
+                setModalInfo({
+                  type: 'renaming',
+                  channel,
+                }),
+              )}
             >
               {t('buttons.rename')}
             </Dropdown.Item>
@@ -148,7 +143,7 @@ const Channels = () => {
         id="channels-box"
         className="nav flex-column nav-pills nav-fill px-2 mb-3 overflow-auto h-100 d-block"
       >
-        {channels.map((channel) => renderChannel(channel))}
+        {channels.map((channel) => renderChannel(channel)) ?? null}
       </ul>
     </>
   );

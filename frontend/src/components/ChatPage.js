@@ -1,7 +1,7 @@
 import Navbar from './Navbar';
 import Channels from './Channels';
 import Messages from './Messages/Messages';
-import Modals from './Modals';
+import Modals from './Modals/Modals';
 
 const ChatPage = () => (
   <div className="h-100 d-flex flex-column" id="chat">
