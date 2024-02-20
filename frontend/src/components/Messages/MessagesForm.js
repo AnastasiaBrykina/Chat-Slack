@@ -4,7 +4,6 @@ import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import * as filter from 'leo-profanity';
 
 import { getCurrentUserName } from '../../authData';
 import restApi from '../../restApi';
@@ -49,7 +48,7 @@ const MessagesForm = () => {
       <InputGroup id="body">
         <Form.Control
           id="messagesInput"
-          type='text'
+          type="text"
           name="body"
           placeholder={t('chatPage.messages.form.body')}
           aria-label="Новое сообщение"
