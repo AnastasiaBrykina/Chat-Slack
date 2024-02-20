@@ -56,6 +56,7 @@ const LoginPage = () => {
       <h1 className="text-center mb-4">{t('loginPage.title')}</h1>
       <Form.Group className="form-floating mb-3" controlId="username">
         <Form.Control
+          text="Ваш ник"
           name="username"
           autoComplete="username"
           required
@@ -70,6 +71,7 @@ const LoginPage = () => {
       </Form.Group>
       <Form.Group className="form-floating mb-4" controlId="password">
         <Form.Control
+          text="Пароль"
           name="password"
           autoComplete="current-password"
           required
@@ -110,6 +112,7 @@ const LoginPage = () => {
                 <div className="d-flex justify-content-center">
                   <span>{t('loginPage.footer.text')}</span>
                   <Button
+                    text="Регистрация"
                     href="/signup"
                     variant="link"
                     className="p-0"

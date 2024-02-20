@@ -67,6 +67,7 @@ const SignupPage = () => {
       <h1 className="text-center mb-4">{t('signupPage.title')}</h1>
       <Form.Group className="form-floating mb-3" controlId="username">
         <Form.Control
+          text='Имя пользователя'
           placeholder={t('validationSchema.generalErr.length')}
           name="username"
           autoComplete="username"
@@ -83,6 +84,7 @@ const SignupPage = () => {
       </Form.Group>
       <Form.Group className="form-floating mb-3" controlId="password">
         <Form.Control
+          text='Пароль'
           placeholder={t('validationSchema.password.length')}
           name="password"
           aria-describedby="passwordHelpBlock"
@@ -101,6 +103,7 @@ const SignupPage = () => {
       </Form.Group>
       <Form.Group className="form-floating mb-3" controlId="confirmPassword">
         <Form.Control
+          text='Подтвердите пароль'
           placeholder={t('validationSchema.password.confirm')}
           name="confirmPassword"
           required
