@@ -75,6 +75,7 @@ const ChannelsAddModal = () => {
           <Form.Group controlId="name">
             <Form.Label className="visually-hidden" />
             <Form.Control
+              text="Имя канала"
               name="name"
               className="mb-2"
               onChange={formik.handleChange}
