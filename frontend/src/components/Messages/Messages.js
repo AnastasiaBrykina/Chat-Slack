@@ -87,8 +87,7 @@ const Messages = () => {
         {m.map(({ id, body, username }) => (
           <div key={id} className="text-break mb-2" ref={refMessage}>
             <b>{username}</b>
-            :
-            {body}
+            {`: ${body}`}
           </div>
         ))}
       </>
