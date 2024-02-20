@@ -49,6 +49,7 @@ const MessagesForm = () => {
       <InputGroup id="body">
         <Form.Control
           id="messagesInput"
+          type='text'
           name="body"
           placeholder={t('chatPage.messages.form.body')}
           aria-label="Новое сообщение"
