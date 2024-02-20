@@ -25,11 +25,10 @@ const MessagesForm = () => {
       body: '',
     },
     onSubmit: async ({ body }) => {
-      const filterBody = filter.clean(body);
       try {
         setDisablesStatus(true);
         const newMessage = {
-          body: filterBody,
+          body,
           channelId: currentChannel.id,
           username: getCurrentUserName(),
         };

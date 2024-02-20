@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import * as filter from 'leo-profanity';
 
 import restApi from '../../restApi';
 import { loadMessages, setLoadStatus } from '../../slices/messages';
@@ -65,7 +66,7 @@ const Messages = () => {
         <p className="m-0">
           <b>
             #
-            {currentChannel.name}
+            {filter.clean(currentChannel.name)}
           </b>
         </p>
         <span>
@@ -87,7 +88,7 @@ const Messages = () => {
         {m.map(({ id, body, username }) => (
           <div key={id} className="text-break mb-2" ref={refMessage}>
             <b>{username}</b>
-            {`: ${body}`}
+            {`: ${filter.clean(body)}`}
           </div>
         ))}
       </>
