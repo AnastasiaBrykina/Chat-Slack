@@ -4,6 +4,7 @@ import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import * as filter from 'leo-profanity';
 
 import { loadChannels, selectedChannel } from '../slices/channels';
 import { setModalInfo } from '../slices/modals';
@@ -58,6 +59,7 @@ const Channels = () => {
 
   const rendeChannelButton = (channel) => {
     const { id, name, removable } = channel;
+    const filterName = filter.clean(name);
     if (removable) {
       return (
         <Dropdown as={ButtonGroup} className="d-flex">
@@ -68,7 +70,7 @@ const Channels = () => {
             onClick={() => dispatch(selectedChannel(channel))}
           >
             <span className="me-1">#</span>
-            {name}
+            {filterName}
           </Button>
 
           <Dropdown.Toggle

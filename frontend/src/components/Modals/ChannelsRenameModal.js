@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import * as filter from 'leo-profanity';
 
 import { setModalInfo } from '../../slices/modals';
 import restApi from '../../restApi';
@@ -22,11 +23,12 @@ const ChannelsRenameModal = () => {
   }, []);
 
   const { channel } = modalInfo;
+  const filterName = filter.clean(channel.name);
   const channelsNames = channels.map(({ name }) => name);
 
   const formik = useFormik({
     initialValues: {
-      name: channel.name,
+      name: filterName,
     },
     onSubmit: async ({ name }) => {
       try {
