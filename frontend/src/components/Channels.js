@@ -77,7 +77,11 @@ const Channels = () => {
             split
             variant={getBtnVariant(id)}
             className="flex-grow-0"
-          />
+          >
+            <span className="visually-hidden">
+              Управление каналом
+            </span>
+          </Dropdown.Toggle>
 
           <Dropdown.Menu>
             <Dropdown.Item
