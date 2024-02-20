@@ -12,3 +12,7 @@ lint-frontend:
 	
 start:
 	make start-backend & make start-frontend
+
+build:
+	rm frontend/build -rf
+	npm run build
