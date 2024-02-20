@@ -23,12 +23,11 @@ const ChannelsRenameModal = () => {
   }, []);
 
   const { channel } = modalInfo;
-  const filterName = filter.clean(channel.name);
   const channelsNames = channels.map(({ name }) => name);
 
   const formik = useFormik({
     initialValues: {
-      name: filterName,
+      name: channel.name,
     },
     onSubmit: async ({ name }) => {
       try {
@@ -80,7 +79,7 @@ const ChannelsRenameModal = () => {
               name="name"
               className="mb-2"
               onChange={formik.handleChange}
-              value={formik.values.name}
+              value={filter.clean(formik.values.name)}
               isInvalid={!!formik.errors.name}
               ref={inputEl}
               disabled={isDisabled}
