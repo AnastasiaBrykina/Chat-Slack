@@ -7,7 +7,6 @@ extends:
   - plugin:react/recommended
   - plugin:functional/recommended
   - plugin:react-hooks/recommended
-  - react-app
 
 parserOptions:
   ecmaFeatures:
@@ -39,5 +38,5 @@ rules:
   react/jsx-filename-extension: [1, { 'extensions': ['.js', '.jsx'] }]
   functional/no-return-void: off #*
   import/no-anonymous-default-export: 0 #*
-  no-param-reassign: 0 #*
+  no-param-reassign: off #*
   react-hooks/exhaustive-deps: 0 #*
