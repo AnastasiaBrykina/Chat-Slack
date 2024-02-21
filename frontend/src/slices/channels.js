@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { getCurrentUserName } from '../authData';
+
 const initialState = {
   channels: [],
   selectedChannel: null,
@@ -20,8 +22,11 @@ const channelsSlice = createSlice({
       state.selectedChannel = payload;
     },
     addChannel: (state, { payload }) => {
+      const { username } = payload;
       state.channels.push(payload);
-      state.selectedChannel = payload;
+      if (username === getCurrentUserName()) {
+        state.selectedChannel = payload;
+      }
     },
     removeChannel: (state, { payload }) => {
       const filteredChannels = state.channels.filter(
