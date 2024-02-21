@@ -26,8 +26,8 @@ const ChannelsRemoveModal = () => {
       if (currentChannel.id === channelId) {
         dispatch(selectedChannel(channels[0]));
       }
-      dispatch(setModalInfo({ type: null }));
       toast.success(t('toast.rmChannel'));
+      dispatch(setModalInfo({ type: null }));
     } catch (e) {
       console.error(e);
       toast.error(t('toast.error'));

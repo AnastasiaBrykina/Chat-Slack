@@ -76,7 +76,7 @@ const ru = {
     },
     toast: {
       addChannel: 'Канал создан',
-      rmChannel: 'Канал удален',
+      rmChannel: 'Канал удалён',
       rnChannel: 'Канал переименован',
       error: 'Ошибка соединения',
     },
